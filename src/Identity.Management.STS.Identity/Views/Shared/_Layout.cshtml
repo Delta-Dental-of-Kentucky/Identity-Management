@@ -1,0 +1,116 @@
+﻿@using IdentityServer4.Extensions
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Identity.Management.Admin.EntityFramework.Shared.Entities.Identity
+@using Identity.Management.STS.Identity.Configuration.Interfaces
+@inject IRootConfiguration RootConfiguration
+@inject IViewLocalizer Localizer
+@{
+    string name = null;
+    if (!true.Equals(ViewData["signed-out"]))
+    {
+        name = Context.User?.GetDisplayName();
+    }
+}
+
+@inject SignInManager<UserIdentity> SignInManager
+@{
+    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@RootConfiguration.AdminConfiguration.PageTitle</title>
+    <link rel="icon" type="image/x-icon" href="@UrlHelper.Content(RootConfiguration.AdminConfiguration.FaviconUri)"/>
+    <link rel="shortcut icon" type="image/x-icon" href="@UrlHelper.Content(@RootConfiguration.AdminConfiguration.FaviconUri)"/>
+
+    <environment include="Development">
+        <link href="~/dist/css/bundle.min.css" asp-append-version="true" rel="stylesheet"/>
+        @await Html.PartialAsync("Common/ThemeResources")
+        <link href="~/dist/css/web.public.css" asp-append-version="true" rel="stylesheet"/>
+    </environment>
+    <environment exclude="Development">
+        <link href="~/dist/css/bundle.min.css" asp-append-version="true" rel="stylesheet"/>
+        @await Html.PartialAsync("Common/ThemeResources")
+        <link href="~/dist/css/web.public.min.css" asp-append-version="true" rel="stylesheet"/>
+    </environment>
+
+    @if (!string.IsNullOrEmpty(RootConfiguration.AdminConfiguration.CustomThemeCss))
+    {
+        <link href="@UrlHelper.Content(RootConfiguration.AdminConfiguration.CustomThemeCss)" asp-append-version="true" rel="stylesheet"/>
+    }
+
+    @await RenderSectionAsync("styles", required: false)
+</head>
+<body>
+    <header>
+        <div class="container fixed-top header-container">
+                <nav class="navbar navbar-expand-md navbar-dark bg-primary">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="/images/logo.png" alt="Delta Dental of Ketucky Logo" class="header-logo"></a>
+                    <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+                        <ul class="nav navbar-nav">
+                             <vc:identity-server-admin-link></vc:identity-server-admin-link>
+                            @if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(name))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        My Account
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                        <a class="dropdown-item" asp-controller="Manage" asp-action="Index">@Localizer["ManageProfile"]</a>
+                                        @if (hasExternalLogins)
+                                        {
+                                            <a class="dropdown-item" asp-controller="Manage" asp-action="ExternalLogins">@Localizer["ExternalLogins"]</a>
+                                        }
+                                        <a class="dropdown-item" asp-controller="Manage" asp-action="TwoFactorAuthentication">@Localizer["2FA"]</a>
+                                        <a class="dropdown-item" asp-controller="Manage" asp-action="ChangePassword">@Localizer["ChangePassword"]</a>
+                                        <a class="dropdown-item" asp-controller="Grants" asp-action="Index">@Localizer["Grants"]</a>
+                                    </div>
+                                </li>
+                                <li role="presentation" class="nav-item"><a class="nav-link" asp-action="Logout" asp-controller="Account">@Localizer["Signout"]</a></li>
+                            }
+                            else
+                            {
+                                <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Login" title="Log In">Log In</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Register" title="Register">Register</a></li>
+                            }
+                        </ul>
+
+                    </div>
+                </nav>
+        </div>
+    </header>
+    <div class="container">
+        @{
+            var body = (string)TempData["Message"];
+        }
+        @if (!string.IsNullOrEmpty(body))
+        {
+            <div class="alert alert-basic alert-dismissible" role="alert" style="margin-top: -15px; margin-left: -15px; margin-right: -15px;">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                @Html.Raw(body)
+            </div>
+        }
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year.ToString() - Delta Dental of Kentucky</p>
+        </footer>
+    </div>
+
+    <environment include="Development">
+        <script src="~/dist/js/bundle.min.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/dist/js/bundle.min.js" asp-append-version="true"></script>
+    </environment>
+
+    @await RenderSectionAsync("scripts", required: false)
+</body>
+</html>
