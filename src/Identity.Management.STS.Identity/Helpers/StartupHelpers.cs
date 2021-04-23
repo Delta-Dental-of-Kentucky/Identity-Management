@@ -373,7 +373,7 @@ namespace Identity.Management.STS.Identity.Helpers
 
             if (externalProviderConfiguration.UseAzureAdProvider)
             {
-                authenticationBuilder.AddAzureAD(AzureADDefaults.AuthenticationScheme, AzureADDefaults.OpenIdScheme, AzureADDefaults.CookieScheme, AzureADDefaults.DisplayName,options =>
+                authenticationBuilder.AddAzureAD(AzureADDefaults.AuthenticationScheme, AzureADDefaults.OpenIdScheme, AzureADDefaults.CookieScheme, "Deltadentalky.site Account",options =>
                     {
                         options.ClientSecret = externalProviderConfiguration.AzureAdSecret;
                         options.ClientId = externalProviderConfiguration.AzureAdClientId;

@@ -124,7 +124,7 @@
     <value>Change Password</value>
   </data>
   <data name="ExternalLogins" xml:space="preserve">
-    <value>External Accounts</value>
+    <value>Single Sign On</value>
   </data>
   <data name="FooterCopyright" xml:space="preserve">
     <value>©</value>
