@@ -5,6 +5,7 @@
 // Modified by Jan Škoruba
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -406,7 +407,7 @@ namespace Identity.Management.STS.Identity.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             ViewData["LoginProvider"] = info.LoginProvider;
             var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-            var userName = info.Principal.Identity.Name;
+            var userName = info.Principal.FindFirstValue(ClaimTypes.Upn);
 
             return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email, UserName = userName });
         }
@@ -449,11 +450,25 @@ namespace Identity.Management.STS.Identity.Controllers
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info);
+                    
                     if (result.Succeeded)
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        var claims = new List<Claim>();
+                        claims = AddClaimToList(claims, info.Principal.FindFirst(ClaimTypes.GivenName), "given_name");
+                        claims = AddClaimToList(claims, info.Principal.FindFirst(ClaimTypes.Surname), "family_name");
+                        claims = AddClaimToList(claims, info.Principal.FindFirst("name"), "name");
+                        
+                        if (claims.Count > 0)
+                        {
+                            result = await _userManager.AddClaimsAsync(user, claims);
+                        }
 
-                        return RedirectToLocal(returnUrl);
+                        if (result.Succeeded)
+                        {
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+
+                            return RedirectToLocal(returnUrl);
+                        }
                     }
                 }
 
@@ -813,6 +828,25 @@ namespace Identity.Management.STS.Identity.Controllers
             }
 
             return vm;
+        }
+
+        List<Claim> AddClaimToList(List<Claim> claimList, Claim claim, string mappedClaimType)
+        {
+            var claimsToReturn = new List<Claim>(claimList);
+
+            if (claim != null)
+            {
+                if (claim.Type == mappedClaimType)
+                {
+                    claimsToReturn.Add(claim);
+                }
+                else
+                {
+                    claimsToReturn.Add(new Claim(mappedClaimType, claim.Value));
+                }
+            }
+
+            return claimsToReturn;
         }
     }
 }

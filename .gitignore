@@ -450,6 +450,7 @@ $RECYCLE.BIN/
 
 #Environment files
 appsettings.Development.json
+serilog.Development.json
 
 #Seed Data
 identitydata.json
