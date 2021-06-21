@@ -1,0 +1,66 @@
+version: '3.4'
+
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx
+    depends_on:
+     - identity.management.admin
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - '/var/run/docker.sock:/tmp/docker.sock:ro'
+      - './shared/nginx/vhost.d:/etc/nginx/vhost.d'
+      - './shared/nginx/certs:/etc/nginx/certs:ro'
+    networks:
+      proxy: null
+      identityserverui:
+        aliases:
+          - sts-id.deltadentalky.local
+          - admin-id.deltadentalky.local
+          - admin-api-id.deltadentalky.local
+    restart: always
+  identity.management.admin:
+    image: ${DOCKER_REGISTRY-}ddky-identityserver4-admin
+    build:
+      context: .
+      dockerfile: src/Identity.Management.Admin/Dockerfile
+    container_name: ddky-identityserver4-admin
+    depends_on:
+      - identity.management.sts
+    volumes:
+      - './shared/serilog.json:/app/serilog.json'
+      - './shared/nginx/certs/cacerts.crt:/usr/local/share/ca-certificates/cacerts.crt'
+    networks:
+      identityserverui: null
+  identity.management.admin.api:
+    image: '${DOCKER_REGISTRY-}ddky-identityserver4-admin-api'
+    build:
+      context: .
+      dockerfile: src/Identity.Management.Admin.Api/Dockerfile
+    container_name: ddky-identityserver4-admin-api
+    volumes:
+      - './shared/serilog.json:/app/serilog.json'
+      - './shared/nginx/certs/cacerts.crt:/usr/local/share/ca-certificates/cacerts.crt'
+    networks:
+      identityserverui: null
+  identity.management.sts:
+    image: '${DOCKER_REGISTRY-}ddky-identityserver4-sts-identity'
+    build:
+      context: .
+      dockerfile: src/Identity.Management.STS.Identity/Dockerfile
+    container_name: ddky-identityserver4-sts-identity
+    volumes:
+      - './shared/serilog.json:/app/serilog.json'
+      - './shared/nginx/certs/cacerts.crt:/usr/local/share/ca-certificates/cacerts.crt'
+    networks:
+      identityserverui:
+        aliases:
+          - sts.deltadentalky.local
+networks:
+  proxy:
+    driver: bridge
+  identityserverui:
+    driver: bridge
+    
