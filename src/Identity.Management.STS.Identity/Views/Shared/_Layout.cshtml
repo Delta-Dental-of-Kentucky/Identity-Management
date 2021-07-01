@@ -30,12 +30,12 @@
     <environment include="Development">
         <link href="~/dist/css/bundle.min.css" asp-append-version="true" rel="stylesheet"/>
         @await Html.PartialAsync("Common/ThemeResources")
-        <link href="~/dist/css/web.public.css" asp-append-version="true" rel="stylesheet"/>
+        <link href="~/dist/css/web.css" asp-append-version="true" rel="stylesheet"/>
     </environment>
     <environment exclude="Development">
         <link href="~/dist/css/bundle.min.css" asp-append-version="true" rel="stylesheet"/>
         @await Html.PartialAsync("Common/ThemeResources")
-        <link href="~/dist/css/web.public.min.css" asp-append-version="true" rel="stylesheet"/>
+        <link href="~/dist/css/web.min.css" asp-append-version="true" rel="stylesheet"/>
     </environment>
 
     @if (!string.IsNullOrEmpty(RootConfiguration.AdminConfiguration.CustomThemeCss))
