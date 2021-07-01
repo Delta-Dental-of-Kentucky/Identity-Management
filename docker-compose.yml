@@ -27,6 +27,8 @@ services:
       context: .
       dockerfile: src/Identity.Management.Admin/Dockerfile
     container_name: ddky-identityserver4-admin
+    environment:
+      - SeedConfiguration__ApplySeed=false
     depends_on:
       - identity.management.sts
     volumes:
