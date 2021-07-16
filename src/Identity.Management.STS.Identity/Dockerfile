@@ -1,10 +1,10 @@
-FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
 FROM node:lts-buster-slim AS node_base
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 COPY --from=node_base . .
 WORKDIR /src
 COPY ["src/Identity.Management.STS.Identity/Identity.Management.STS.Identity.csproj", "src/Identity.Management.STS.Identity/"]
@@ -27,4 +27,7 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENV ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
-ENTRYPOINT ["dotnet", "Identity.Management.STS.Identity.dll"]
+
+COPY ddky-sts.entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]

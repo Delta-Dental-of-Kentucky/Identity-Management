@@ -23,4 +23,7 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENV ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
-ENTRYPOINT ["dotnet", "Identity.Management.Admin.Api.dll"]
+
+COPY ddky-identity-api.entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
