@@ -21,5 +21,11 @@
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
+**/appsettings.Development.json
+**/appsettings.Staging.json
+**/appsettings.Production.json
+**/serilog.Development.json
+**/serilog.Staging.json
+**/serilog.Production.json
 LICENSE
 README.md

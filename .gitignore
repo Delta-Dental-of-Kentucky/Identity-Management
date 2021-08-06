@@ -450,6 +450,7 @@ $RECYCLE.BIN/
 
 #Environment files
 appsettings.Development.json
+appsettings.Staging.json
 serilog.Development.json
 
 #Seed Data
@@ -460,3 +461,6 @@ identityserverdata.json
 
 tempkey.jwk
 docker-compose.override.yml
+shared/config/ddky-identity-api.appsettings.Staging.json
+shared/config/ddky-sts.appsettings.Staging.json
+shared/config/ddky-identity-admin.appsettings.Staging.json

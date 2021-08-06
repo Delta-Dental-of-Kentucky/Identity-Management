@@ -28,7 +28,10 @@ services:
       dockerfile: src/Identity.Management.Admin/Dockerfile
     container_name: ddky-identityserver4-admin
     environment:
+      - VIRTUAL_HOST=admin-id.deltadentalky.local
       - SeedConfiguration__ApplySeed=false
+      - DockerConfiguration__UpdateCaCertificate=true
+      - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       - identity.management.sts
     volumes:
@@ -42,6 +45,10 @@ services:
       context: .
       dockerfile: src/Identity.Management.Admin.Api/Dockerfile
     container_name: ddky-identityserver4-admin-api
+    environment:
+      - VIRTUAL_HOST=admin-api-id.deltadentalky.local
+      - DockerConfiguration__UpdateCaCertificate=true
+      - ASPNETCORE_ENVIRONMENT=Development
     volumes:
       - './shared/serilog.json:/app/serilog.json'
       - './shared/nginx/certs/cacerts.crt:/usr/local/share/ca-certificates/cacerts.crt'
@@ -53,6 +60,10 @@ services:
       context: .
       dockerfile: src/Identity.Management.STS.Identity/Dockerfile
     container_name: ddky-identityserver4-sts-identity
+    environment:
+      - VIRTUAL_HOST=sts-id.deltadentalky.local
+      - DockerConfiguration__UpdateCaCertificate=true
+      - ASPNETCORE_ENVIRONMENT=Development
     volumes:
       - './shared/serilog.json:/app/serilog.json'
       - './shared/nginx/certs/cacerts.crt:/usr/local/share/ca-certificates/cacerts.crt'
