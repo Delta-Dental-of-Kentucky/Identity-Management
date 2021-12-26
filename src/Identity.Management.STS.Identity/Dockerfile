@@ -15,9 +15,7 @@ COPY . .
 
 WORKDIR "/src/src/Identity.Management.STS.Identity"
 ENV NODE_ENV=development
-RUN npm install
-RUN npm install gulp --global
-RUN gulp build
+
 RUN dotnet build "Identity.Management.STS.Identity.csproj" -c Release -o /app/build
 
 FROM build AS publish

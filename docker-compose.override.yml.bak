@@ -1,0 +1,66 @@
+version: '3.4'
+
+services:
+  identity.management.admin:
+    environment:
+      - VIRTUAL_HOST=admin-id.deltadentalky.local      
+      - SeedConfiguration__ApplySeed=false
+      - 'ConnectionStrings__ConfigurationDbConnection=Server=192.168.1.16,1433;Database=DDKY_Identity_Dev;User Id=test1;Password=12345;MultipleActiveResultSets=true'
+      - 'ConnectionStrings__PersistedGrantDbConnection=Server=192.168.1.16,1433;Database=DDKY_Identity_Dev;User Id=test1;Password=12345;MultipleActiveResultSets=true'
+      - 'ConnectionStrings__IdentityDbConnection=Server=192.168.1.16,1433;Database=DDKY_Identity_Dev;User Id=test1;Password=12345;MultipleActiveResultSets=true'
+      - 'ConnectionStrings__AdminLogDbConnection=Server=192.168.1.16,1433;Database=DDKY_Identity_Dev;User Id=test1;Password=12345;MultipleActiveResultSets=true'
+      - 'ConnectionStrings__AdminAuditLogDbConnection=Server=192.168.1.16,1433;Database=DDKY_Identity_Dev;User Id=test1;Password=12345;MultipleActiveResultSets=true'
+      - 'ConnectionStrings__DataProtectionDbConnection=Server=192.168.1.16,1433;Database=DDKY_Identity_Dev;User Id=test1;Password=12345;MultipleActiveResultSets=true'
+      - 'AdminConfiguration__IdentityAdminBaseUrl=https://admin-id.deltadentalky.local'
+      - 'AdminConfiguration__IdentityAdminRedirectUri=https://admin-id.deltadentalky.local/signin-oidc'
+      - 'AdminConfiguration__IdentityServerBaseUrl=https://sts-id.deltadentalky.local'
+      - 'AdminConfiguration__ClientId=9cb269b9-6e5d-4006-af07-5cf04c5d1838'
+      - 'AdminConfiguration__ClientSecret=Z2ak9ZvokcrUu2'
+      - AdminConfiguration__RequireHttpsMetadata=false
+      - 'IdentityServerData__Clients__0__ClientUri=https://admin-id.deltadentalky.local'
+      - 'IdentityServerData__Clients__0__RedirectUris__0=https://admin-id.deltadentalky.local/signin-oidc'
+      - 'IdentityServerData__Clients__0__FrontChannelLogoutUri=https://admin-id.deltadentalky.local/signin-oidc'
+      - 'IdentityServerData__Clients__0__PostLogoutRedirectUris__0=https://admin-id.deltadentalky.local/signout-callback-oidc'
+      - 'IdentityServerData__Clients__0__AllowedCorsOrigins__0=https://admin-id.deltadentalky.local'
+      - 'IdentityServerData__Clients__1__RedirectUris__0=https://admin-api-id.deltadentalky.local/swagger/oauth2-redirect.html'
+      - 'Serilog__WriteTo__2__Args__connectionString=Server=192.168.1.16,1433;Database=DDKY_Identity_Dev;User Id=test1;Password=12345;MultipleActiveResultSets=true'
+      - DockerConfiguration__UpdateCaCertificate=true
+      - ASPNETCORE_ENVIRONMENT=Development
+  identity.management.admin.api:
+    environment:
+      - VIRTUAL_HOST=admin-api-id.deltadentalky.local
+      - AdminApiConfiguration__RequireHttpsMetadata=false
+      - 'AdminApiConfiguration__ApiBaseUrl=https://admin-api-id.deltadentalky.local'
+      - 'AdminApiConfiguration__IdentityServerBaseUrl=https://sts-id.deltadentalky.local'
+      - 'AdminApiConfiguration__OidcSwaggerUIClientId=9b5b94a7-b57d-43d7-bc8f-6391f609efac_api_swaggerui'
+      - 'AdminApiConfiguration__OidcApiName=9b5b94a7-b57d-43d7-bc8f-6391f609efac_api'
+      - 'ConnectionStrings__ConfigurationDbConnection=Server=192.168.1.16,1433;Database=DDKY_Identity_Dev;User Id=test1;Password=12345;MultipleActiveResultSets=true'
+      - 'ConnectionStrings__PersistedGrantDbConnection=Server=192.168.1.16,1433;Database=DDKY_Identity_Dev;User Id=test1;Password=12345;MultipleActiveResultSets=true'
+      - 'ConnectionStrings__IdentityDbConnection=Server=192.168.1.16,1433;Database=DDKY_Identity_Dev;User Id=test1;Password=12345;MultipleActiveResultSets=true'
+      - 'ConnectionStrings__AdminLogDbConnection=Server=192.168.1.16,1433;Database=DDKY_Identity_Dev;User Id=test1;Password=12345;MultipleActiveResultSets=true'
+      - 'ConnectionStrings__AdminAuditLogDbConnection=Server=192.168.1.16,1433;Database=DDKY_Identity_Dev;User Id=test1;Password=12345;MultipleActiveResultSets=true'
+      - 'ConnectionStrings__DataProtectionDbConnection=Server=192.168.1.16,1433;Database=DDKY_Identity_Dev;User Id=test1;Password=12345;MultipleActiveResultSets=true'
+      - 'Serilog__WriteTo__2__Args__connectionString=Server=192.168.1.16,1433;Database=DDKY_Identity_Dev;User Id=test1;Password=12345;MultipleActiveResultSets=true'
+      - DockerConfiguration__UpdateCaCertificate=true
+      - ASPNETCORE_ENVIRONMENT=Development
+  identity.management.sts:
+    environment:
+      - VIRTUAL_HOST=sts-id.deltadentalky.local
+      - 'ConnectionStrings__ConfigurationDbConnection=Server=192.168.1.16,1433;Database=DDKY_Identity_Dev;User Id=test1;Password=12345;MultipleActiveResultSets=true'
+      - 'ConnectionStrings__PersistedGrantDbConnection=Server=192.168.1.16,1433;Database=DDKY_Identity_Dev;User Id=test1;Password=12345;MultipleActiveResultSets=true'
+      - 'ConnectionStrings__IdentityDbConnection=Server=192.168.1.16,1433;Database=DDKY_Identity_Dev;User Id=test1;Password=12345;MultipleActiveResultSets=true'
+      - 'ConnectionStrings__DataProtectionDbConnection=Server=192.168.1.16,1433;Database=DDKY_Identity_Dev;User Id=test1;Password=12345;MultipleActiveResultSets=true'
+      - 'AdminConfiguration__IdentityAdminBaseUrl=https://admin-id.deltadentalky.local'
+      - 'AdvancedConfiguration__PublicOrigin=https://sts-id.deltadentalky.local'
+      - 'AdvancedConfiguration__IssuerUri=https://sts-id.deltadentalky.local'
+      - 'ExternalProvidersConfiguration__UseAzureAdProvider=true'
+      - 'ExternalProvidersConfiguration__AzureAdClientId=24e5d644-3c51-4e58-93e3-24d8eda57252'
+      - 'ExternalProvidersConfiguration__AzureAdTenantId=6f2e6441-548d-4b96-b56a-6e8b2f6bf088'
+      - 'ExternalProvidersConfiguration__AzureInstance=https://login.microsoftonline.com/'
+      - 'ExternalProvidersConfiguration__AzureAdSecret=W7HY160_6pIJXyzb.aD_0DrNak3Pd~qTB-'
+      - 'ExternalProvidersConfiguration__AzureAdCallbackPath=/signin-oidc'
+      - 'ExternalProvidersConfiguration__AzureDomaine=deltadentalky.site'
+      - 'Serilog__WriteTo__2__Args__connectionString=Server=192.168.1.16,1433;Database=DDKY_Identity_Dev;User Id=test1;Password=12345;MultipleActiveResultSets=true'
+      - DockerConfiguration__UpdateCaCertificate=true
+      - ASPNETCORE_ENVIRONMENT=Development
+    

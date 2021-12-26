@@ -31,6 +31,16 @@ namespace Identity.Management.Admin
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                // this defines a CORS policy called "default"
+                options.AddPolicy("default", policy =>
+                {
+                    policy.WithOrigins("http://localhost:5003")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
             // Adds the IdentityServer4 Admin UI with custom options.
             services.AddIdentityServer4AdminUI<AdminIdentityDbContext, IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext,
             AdminLogDbContext, AdminAuditLogDbContext, AuditLog, IdentityServerDataProtectionDbContext,
@@ -47,6 +57,7 @@ namespace Identity.Management.Admin
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             app.UseRouting();
+            app.UseCors("default");
 
             app.UseIdentityServer4AdminUI();
 
